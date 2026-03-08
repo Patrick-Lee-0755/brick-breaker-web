@@ -88,4 +88,4 @@ http://127.0.0.1:8000/
 
 ## License
 
-You can add an MIT license if you want to make reuse explicit.
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
