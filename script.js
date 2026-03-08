@@ -7,6 +7,10 @@ const overlayText = document.getElementById("overlayText");
 const actionButton = document.getElementById("actionButton");
 const scoreEl = document.getElementById("score");
 const livesEl = document.getElementById("lives");
+const boardWrap = document.getElementById("boardWrap");
+const leftButton = document.getElementById("leftButton");
+const rightButton = document.getElementById("rightButton");
+const launchButton = document.getElementById("launchButton");
 
 const game = {
   width: canvas.width,
@@ -341,7 +345,34 @@ function startGame() {
   resetRun();
 }
 
+function handleLaunchAction() {
+  ensureAudioContext();
+  if (!game.running && (game.status === "ready" || game.status === "lost" || game.status === "won")) {
+    resetRun();
+  } else {
+    launchBall();
+  }
+}
+
+function setMoveState(direction, pressed) {
+  if (direction === "left") keyState.left = pressed;
+  if (direction === "right") keyState.right = pressed;
+}
+
+function movePaddleToClientX(clientX) {
+  const rect = canvas.getBoundingClientRect();
+  const relativeX = ((clientX - rect.left) / rect.width) * game.width;
+  paddle.x = relativeX - paddle.w / 2;
+  paddle.x = Math.max(0, Math.min(game.width - paddle.w, paddle.x));
+
+  if (game.awaitingLaunch) {
+    ball.x = paddle.x + paddle.w / 2;
+    ball.y = paddle.y - ball.r - 1;
+  }
+}
+
 actionButton.addEventListener("click", startGame);
+launchButton.addEventListener("click", handleLaunchAction);
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
@@ -352,12 +383,7 @@ document.addEventListener("keydown", (event) => {
   }
   if (event.code === "Space") {
     event.preventDefault();
-    ensureAudioContext();
-    if (!game.running && (game.status === "ready" || game.status === "lost" || game.status === "won")) {
-      resetRun();
-    } else {
-      launchBall();
-    }
+    handleLaunchAction();
   }
 });
 
@@ -368,6 +394,39 @@ document.addEventListener("keyup", (event) => {
   if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") {
     keyState.right = false;
   }
+});
+
+for (const [button, direction] of [
+  [leftButton, "left"],
+  [rightButton, "right"],
+]) {
+  const press = (event) => {
+    event.preventDefault();
+    setMoveState(direction, true);
+  };
+  const release = (event) => {
+    event.preventDefault();
+    setMoveState(direction, false);
+  };
+
+  button.addEventListener("pointerdown", press);
+  button.addEventListener("pointerup", release);
+  button.addEventListener("pointerleave", release);
+  button.addEventListener("pointercancel", release);
+}
+
+boardWrap.addEventListener("pointerdown", (event) => {
+  if (event.target.closest("button")) return;
+  event.preventDefault();
+  ensureAudioContext();
+  movePaddleToClientX(event.clientX);
+});
+
+boardWrap.addEventListener("pointermove", (event) => {
+  if (event.pointerType !== "touch" && event.pointerType !== "pen") return;
+  if ((event.buttons & 1) !== 1) return;
+  event.preventDefault();
+  movePaddleToClientX(event.clientX);
 });
 
 createBricks();

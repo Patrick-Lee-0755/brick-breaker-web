@@ -69,6 +69,7 @@ body {
   width: 100%;
   height: auto;
   background: linear-gradient(to bottom, #0c1b31, #061021);
+  touch-action: none;
 }
 
 .overlay {
@@ -124,6 +125,27 @@ button:active {
   opacity: 0.9;
 }
 
+.mobile-hint {
+  display: none;
+}
+
+.touch-controls {
+  display: none;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.control-button {
+  width: 100%;
+  min-height: 56px;
+  font-size: 1.1rem;
+}
+
+.control-button.primary {
+  color: #00262d;
+}
+
 @media (max-width: 620px) {
   .top-bar {
     flex-direction: column;
@@ -133,5 +155,13 @@ button:active {
   .hud {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .mobile-hint {
+    display: block;
+  }
+
+  .touch-controls {
+    display: grid;
   }
 }

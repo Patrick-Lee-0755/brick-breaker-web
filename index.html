@@ -16,14 +16,21 @@
       </div>
     </header>
 
-    <section class="board-wrap">
+    <section class="board-wrap" id="boardWrap">
       <canvas id="gameCanvas" width="800" height="560" aria-label="Breakout game area"></canvas>
       <div class="overlay" id="overlay">
         <h2 id="overlayTitle">Brick Breaker</h2>
         <p id="overlayText">Break every brick before you run out of lives.</p>
         <button id="actionButton" type="button">Start Game</button>
         <p class="hint">Controls: Left/Right or A/D to move, Space to launch</p>
+        <p class="hint mobile-hint">On mobile: drag on the game area or use the touch controls below.</p>
       </div>
+    </section>
+
+    <section class="touch-controls" aria-label="Touch controls">
+      <button id="leftButton" class="control-button" type="button" aria-label="Move left">◀</button>
+      <button id="launchButton" class="control-button primary" type="button" aria-label="Launch ball or restart">Launch</button>
+      <button id="rightButton" class="control-button" type="button" aria-label="Move right">▶</button>
     </section>
   </main>
 
